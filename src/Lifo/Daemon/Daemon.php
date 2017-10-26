@@ -21,6 +21,11 @@ use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 
+function tick_handler() {
+  pcntl_signal_dispatch();
+}
+
+
 /**
  * Singleton Daemon class. Extend this class to create a new daemon. A basic daemon can be created by just implementing
  * 2 methods in your parent class: {@link initialize}, {@link execute}, optionally {@link teardown}.
@@ -1973,7 +1978,7 @@ abstract class Daemon
 
     public function setupSignals($handler = null)
     {
-      register_tick_function([$this, 'tick_handler']);
+      register_tick_function('tick_handler');
 
         $signals = $this->getSignals();
         foreach ($signals as $signal) {
@@ -2054,10 +2059,6 @@ abstract class Daemon
     }
 
 
-
-    protected function tick_handler() {
-      pcntl_signal_dispatch();
-    }
 
 
     /**
