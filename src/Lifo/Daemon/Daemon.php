@@ -1734,7 +1734,7 @@ abstract class Daemon
         $this->loopStart = microtime(true);
         $this->loopIterations = 0;
         while ($this->parent && !$this->shutdown) {
-//            pcntl_signal_dispatch();
+            pcntl_signal_dispatch();
 
             $this->loopIterations++;
             $start = microtime(true);
