@@ -1733,7 +1733,7 @@ abstract class Daemon
         $this->loopStart = microtime(true);
         $this->loopIterations = 0;
         while ($this->parent && !$this->shutdown) {
-            pcntl_signal_dispatch();
+//            pcntl_signal_dispatch();
 
             $this->loopIterations++;
             $start = microtime(true);
@@ -1973,6 +1973,8 @@ abstract class Daemon
 
     public function setupSignals($handler = null)
     {
+      register_tick_function([$this, 'tick_handler']);
+
         $signals = $this->getSignals();
         foreach ($signals as $signal) {
             pcntl_signal($signal, $handler ?: function ($signal) {
@@ -2050,6 +2052,13 @@ abstract class Daemon
         }
         $this->dispatch(DaemonEvent::ON_SIGNAL, new SignalEvent($this, $signal));
     }
+
+
+
+    protected function tick_handler() {
+      pcntl_signal_dispatch();
+    }
+
 
     /**
      * Validate the runtime environment to ensure the daemon can run properly.
